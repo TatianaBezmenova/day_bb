@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./day_bb_back
+    command: bash ./start_backend.sh
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - django_logs:/app/logs
+
+  frontend:
+    build: ./day_bb_front2
+    command: bash ./start_frontend.sh
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:17.0
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  django_logs:
